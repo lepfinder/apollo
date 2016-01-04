@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+	<div class="page-header"><h3>{{book.title}} <sub><small>{{book.author}}</small></sub></h3></div>
+
+    <div class="row">
+     	<div class="col-md-8">
+	      	<table>
+	      		<tr>
+		      		<td width="110px;">
+				        <a href="#" class="thumbnail">
+				          <img data-src="holder.js/100%x180" alt="100%x180" style="height: 158px; width: 108px; display: block;" src="{{book.image}}" data-holder-rendered="true">
+				        </a>
+				    </td>
+			    	<td class="book-info">
+			    		<small>
+							<p>作者：{{book.author}}</p>
+							<p>书名：{{book.title}}</p>
+							<p>出版社：{{book.publisher}}</p>
+							<p>价格：{{book.price}}</p>
+							<p>共享人：{{book.owner_name}}</p>
+							<p>当前持有人：{{book.borrow_name}}</p>
+							<p>借阅次数：{{book.borrow_counts}}</p>
+						</small>
+					</td>
+					
+	    		</tr>
+	        </table>
+	        <p>
+	        	<div class="text-success">内容简介：</div>
+	        	<small>&nbsp;&nbsp;&nbsp;&nbsp;{{book.summary}}</small>
+	    	</p>
+	    	<div><br/>
+	    		<div class="col-md-6">
+			        {% if current_user.is_authenticated %}
+
+		    			{% if current_user.id | int == book.borrow_id %}
+			    		<a class="btn btn-primary btn-block" onClick="reback({{book.id}})"><span class="glyphicon glyphicon-book"></span> 我要还这本书</a>
+			    		{% endif %}
+			    		{% if current_user.id | int != book.borrow_id %}
+			    		<a class="btn btn-success btn-block" onClick="borrow({{book.id}})"><span class="glyphicon glyphicon-book"></span> 我要借这本书</a>
+			    		{% endif %}
+			    		
+		    		{% endif %}
+
+		    	</div>
+	    	</div>
+    	</div>
+     	<div class="col-md-4">
+     		<div class="page-header"><h4>借阅历史</h4></div>
+
+     		{% for a in borrow_log_list %}
+     		<div class="well">
+	    		<small>
+					<p>借阅人：{{a.account_name}}</p>
+					<p>借阅时间：{{a.create_time}}</p>
+					<p>归还时间：{{a.real_reback_time}}</p>
+				</small>
+			</div>
+      		{% endfor %}
+		</div>
+      
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+
+	function reback(book_id){
+		$.post("/books/reback/",{
+			book_id : book_id
+		},function(data){
+			history.go(0)
+		});
+	}
+
+	function borrow(book_id){
+		$.post("/books/borrow/",{
+			book_id : book_id
+		},function(data){
+			history.go(0)
+		});
+	}
+	
+</script>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-9"> 
+			<div class="page-header"><h3>当前借阅的图书</h3></div>
+		    <div class="row">
+		      {% for a in borrow_book_list %}
+		      <div class="col-xs-6 col-md-4 col-lg-4">
+		      	<table>
+		      		<tr>
+			      		<td width="110px;">
+					        <a href="/books/{{a.id}}" class="thumbnail">
+					          <img data-src="holder.js/100%x180" alt="100%x180" style="height: 158px; width: 108px; display: block;" src="{{a.image}}" data-holder-rendered="true">
+					        </a>
+					    </td>
+				    	<td class="book-info">
+				    		<small>
+								<p>作者：{{a.author[:12]}}</p>
+								<p>书名：{{a.title[:10]}}</p>
+								<p>出版社：{{a.publisher[:7]}}</p>
+								<p>价格：{{a.price}}</p>
+								<p>共享人：{{a.owner_name}}</p>
+								<p>当前持有人：{{a.borrow_name}}</p>
+							</small>
+						</td>
+		    		</tr>
+		        </table>
+		      </div>
+		      {% endfor %}
+		    </div>
+
+			<div class="page-header"><h3>我分享的图书</h3></div>
+		    <div class="row">
+		      {% for a in share_book_list %}
+		      <div class="col-xs-6 col-md-4 col-lg-4">
+		      	<table>
+		      		<tr>
+			      		<td width="110px;">
+					        <a href="/books/{{a.id}}" class="thumbnail">
+					          <img data-src="holder.js/100%x180" alt="100%x180" style="height: 158px; width: 108px; display: block;" src="{{a.image}}" data-holder-rendered="true">
+					        </a>
+					    </td>
+				    	<td class="book-info">
+				    		<small>
+								<p>作者：{{a.author[:12]}}</p>
+								<p>书名：{{a.title[:10]}}</p>
+								<p>出版社：{{a.publisher[:7]}}</p>
+								<p>价格：{{a.price}}</p>
+								<p>共享人：{{a.owner_name}}</p>
+								<p>当前持有人：{{a.borrow_name}}</p>
+							</small>
+						</td>
+		    		</tr>
+		        </table>
+		      </div>
+		      {% endfor %}
+		    </div>
+		</div>
+
+		<div class="col-md-3">
+			<div class="page-header">
+				<h3>借阅历史</h3>
+			</div>
+			{% for a in borrow_log_list %}
+     		<div class="well">
+	    		<small>
+					<p>书名：{{a.book_name}}</p>
+					<p>借阅人：{{a.account_name}}</p>
+					<p>借阅时间：{{a.create_time}}</p>
+					<p>归还时间：{{a.real_reback_time}}</p>
+				</small>
+			</div>
+      		{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}

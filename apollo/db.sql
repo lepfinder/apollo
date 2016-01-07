@@ -1,25 +1,21 @@
-
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 127.0.0.1
+ Source Server         : 10.37.63.8
  Source Server Type    : MySQL
- Source Server Version : 50623
- Source Host           : 127.0.0.1
+ Source Server Version : 50627
+ Source Host           : 10.37.63.8
  Source Database       : apollo
 
  Target Server Type    : MySQL
- Target Server Version : 50623
+ Target Server Version : 50627
  File Encoding         : utf-8
 
- Date: 01/04/2016 09:28:11 AM
+ Date: 01/07/2016 09:50:47 AM
 */
 
 SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
-
-create database apollo;
-use apollo;
 
 -- ----------------------------
 --  Table structure for `accounts`
@@ -33,7 +29,19 @@ CREATE TABLE `accounts` (
   `login_name` varchar(64) DEFAULT NULL,
   `mobile` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Table structure for `book_tag`
+-- ----------------------------
+DROP TABLE IF EXISTS `book_tag`;
+CREATE TABLE `book_tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `book_id` int(11) DEFAULT NULL,
+  `tag_id` int(11) DEFAULT NULL,
+  `count` int(11) DEFAULT NULL COMMENT '被标记的数量',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 --  Table structure for `books`
@@ -61,7 +69,7 @@ CREATE TABLE `books` (
   `borrow_counts` int(11) DEFAULT NULL COMMENT '借阅次数',
   `borrow_log_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 --  Table structure for `borrow_log`
@@ -76,7 +84,19 @@ CREATE TABLE `borrow_log` (
   `borrow_days` int(6) DEFAULT NULL COMMENT '借阅天数',
   `real_reback_time` datetime DEFAULT NULL COMMENT '实际还书时间',
   `account_name` varchar(64) DEFAULT NULL COMMENT '借阅人',
+  `book_name` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Table structure for `tags`
+-- ----------------------------
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE `tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 SET FOREIGN_KEY_CHECKS = 1;

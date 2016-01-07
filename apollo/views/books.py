@@ -13,6 +13,7 @@ from sqlalchemy import or_
 
 from apollo.models import Book,BorrowLog
 from apollo.extensions import db
+from apollo.helpers import DoubanClient
 
 books = Module(__name__)
 
@@ -29,9 +30,9 @@ def index():
 
         print "keywords=",keywords,"page=",page
         if not keywords:
-            page_obj = Book.query.paginate(page, Book.PER_PAGE, False)
+            page_obj = Book.query.order_by(Book.id.desc()).paginate(page, Book.PER_PAGE, False)
         else:
-            page_obj = Book.query.filter(or_(Book.title.ilike('%'+keywords+"%"),Book.author.ilike('%'+keywords+"%"),Book.owner_name.ilike('%'+keywords+"%"))).paginate(page, Book.PER_PAGE, False)
+            page_obj = Book.query.filter(or_(Book.title.ilike('%'+keywords+"%"),Book.author.ilike('%'+keywords+"%"),Book.owner_name.ilike('%'+keywords+"%"))).order_by(Book.id.desc()).paginate(page, Book.PER_PAGE, False)
     else:
         page_obj = Book.query.paginate(page, Book.PER_PAGE, False)
 
@@ -42,8 +43,8 @@ def index():
 @books.route("/my/", methods=("GET","POST"))
 @login_required
 def my():
-    borrow_book_list = Book.query.filter_by(borrow_id=current_user.id).limit(10)
-    share_book_list = Book.query.filter_by(owner_id=current_user.id).limit(10)
+    borrow_book_list = Book.query.filter_by(borrow_id=current_user.id).order_by(Book.id.desc()).limit(10)
+    share_book_list = Book.query.filter_by(owner_id=current_user.id).order_by(Book.id.desc()).limit(10)
 
     #借阅历史
     borrow_log_list = BorrowLog.query.filter_by(account_id = current_user.id).order_by(BorrowLog.id.desc()).limit(10)
@@ -82,40 +83,16 @@ def douban_book_info():
 def share():
     if request.method == "GET":
         return render_template("share.html")
-
     isbn = request.form['isbn']
-    r = requests.get('http://api.douban.com/v2/book/isbn/%s' % isbn)
-
-    jsonObj = json.loads(r.text)
-
-    book = Book()
+    client = DoubanClient()
+    book = client.parse_book_info(isbn)
 
     print current_user.name
 
-    if jsonObj['title']:
-        book.title = jsonObj['title']
-        
-        authors = jsonObj['author']
-        book.author = ",".join(authors)
-
-        book.price = jsonObj['price']
-        book.summary = jsonObj['summary']
-        book.catalog = jsonObj['catalog']
-        book.publisher = jsonObj['publisher']
-        book.isbn13 = jsonObj['isbn13']
-        book.douban_id = jsonObj['id']
-        book.image = jsonObj['image']
-        book.douban_url = jsonObj['alt']
-        book.pages = jsonObj['pages']
-        book.pubdate = jsonObj['pubdate']
-        book.rating = jsonObj['rating']['average']
-
+    if book:
         book.owner_id = current_user.id
         book.owner_name = current_user.name
-        book.borrow_id = 0
-        book.borrow_name = ''
-        book.borrow_counts = 0
-
+        
         db.session.add(book)
         db.session.commit()
 

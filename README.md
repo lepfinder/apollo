@@ -13,15 +13,22 @@ cd apollo
 virtualenv venv
 . venv/bin/activate
 
-pip install -r requirements.txt
+pip install -r requirments.txt
+
+创建数据库，建表文件db.sql
 
 修改apollo/config.cfg文件，配置数据库url
 
 python manager.py runserver
+nohup python manager.py runserver &
 ```
 
 
 ### 设计思路
+
+https://developers.douban.com/wiki/?title=book_v2
+
+https://api.douban.com/v2/book/isbn/9787513408165
 
 
 ### TODO

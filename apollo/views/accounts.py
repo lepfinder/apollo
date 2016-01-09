@@ -16,6 +16,7 @@ from books import books
 
 accounts = Module(__name__)
 
+# 注册
 @accounts.route("/register/",methods=["GET","POST"])
 def register():
     if request.method == "GET":
@@ -36,25 +37,24 @@ def register():
         db.session.add(account)
         db.session.commit()
 
-        flash("register success,please login first.","info")
+        flash(u"register success,please login first.","info")
 
     return redirect(url_for("accounts.login"))
 
-
+#加载用户
 @login_manager.user_loader
 def load_user(userid):
     account = Account.query.filter_by(id=userid).first()
-
     return account
 
+# 用户登录
 @accounts.route("/login/",methods=["GET","POST"])
 def login():
     if request.method == "POST":
         login_name = request.form['login_name']
-        passwd = request.form['passwd']
 
-        if login_name and passwd:
-            account = Account.query.filter_by(login_name=login_name).filter_by(passwd=passwd).first()
+        if login_name:
+            account = Account.query.filter_by(login_name=login_name).first()
             
             if account:
                 user = Account(account.id,account.name,account.create_time)
@@ -68,6 +68,7 @@ def login():
             flash ("Sorry, please check your username or password!","danger")
     return render_template("login.html")
 
+# 用户登出
 @accounts.route("/logout/")
 def logout():
     logout_user()

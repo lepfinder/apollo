@@ -1,64 +1,13 @@
 .navbar{
-		margin-bottom: 0px;
-	}
-	.doc-search-header{
-		padding:45px 0px 45px 0px;
-		margin-bottom: 20px;
-		background-color: #ccc;
-		color: #666;
-	}
-	.cf:before, .cf:after{
-	    content:"";
-	    display:table;
-	} 
-	.cf:after{
-	    clear:both;
-	}
-	.cf{
-	    zoom:1;
-	}    
-	.form-wrapper {
-	    width: 650px;
-	    margin: 0px auto 5px auto;
-	    background: #444;
-	    background: rgba(0,0,0,.2);
-	    border-radius: 5px;
-	    box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(255,255,255,.2);
-	}
-	/* Form text input */
-	.form-wrapper input {
-	    width: 650px;
-	    padding: 11px 10px;
-	    float: left;    
-	    font: bold 15px 'lucida sans', 'trebuchet MS', 'Tahoma';
-	    border: 0;
-	    background: #eee;
-	    border-radius: 3px;
-	}
-	.form-wrapper input:focus {
-	    outline: 0;
-	    background: #fff;
-	    box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
-	}
-	.form-wrapper input::-webkit-input-placeholder {
-	   color: #999;
-	   font-weight: normal;
-	   font-style: italic;
-	}
-	.form-wrapper input:-moz-placeholder {
-	    color: #999;
-	    font-weight: normal;
-	    font-style: italic;
-	}
-	.form-wrapper input:-ms-input-placeholder {
-	    color: #999;
-	    font-weight: normal;
-	    font-style: italic;
-	}    
-	
-	.thumbnail{
-		border:0px;
-	}
-	.book-info p{
-		margin: 5px;
-	}
+	margin-bottom: 0px;
+}
+.jumbotron{
+	padding-top: 10px;
+	padding-bottom: 30px;
+}
+.thumbnail{
+	border:0px;
+}
+.book-info p{
+	margin: 5px;
+}

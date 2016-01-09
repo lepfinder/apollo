@@ -30,6 +30,7 @@ class Book(db.Model):
     borrow_id = db.Column(db.Integer)
     borrow_log_id = db.Column(db.Integer)
     borrow_counts = db.Column(db.Integer)
+    status = db.Column(db.Integer)
 
 class BorrowLog(db.Model):
     __tablename__ = 'borrow_log'
@@ -41,6 +42,7 @@ class BorrowLog(db.Model):
     book_id = db.Column(db.Integer)
     book_name = db.Column(db.String(128))
     create_time = db.Column(db.DateTime)
+    reback_time = db.Column(db.DateTime)
     real_reback_time = db.Column(db.DateTime)
 
     def __init__(self,account_id,account_name,book_id,book_name):
@@ -56,6 +58,7 @@ class Tag(db.Model):
     id = db.Column(db.Integer,primary_key=True)
 
     name = db.Column(db.String(64))
+    counts = db.Column(db.Integer)
     create_time = db.Column(db.DateTime)
 
 

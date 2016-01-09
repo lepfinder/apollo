@@ -4,6 +4,12 @@
 书香馆是一个基于flask开发的P2P图书分享应用。效果图：
 ![](http://7xo9p3.com1.z0.glb.clouddn.com/markdown/1451891670154.png?imageMogr2/thumbnail/!50p/quality/100!)
 
+主要特点：
+
+- 可以分享自己的藏书
+- 可以向周围的人借阅图书
+- 每个人同时只能借阅一本图书
+
 
 ### 运行
 
@@ -32,6 +38,13 @@ https://api.douban.com/v2/book/isbn/9787513408165
 
 
 ### TODO
+
+登录
+图书分享，推荐词
+还书添加确认流程
+添加图书评论
+添加图书标签
+
 
 - 图书标签
 - 日志体系

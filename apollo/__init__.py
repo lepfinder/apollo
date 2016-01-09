@@ -38,7 +38,7 @@ def configure_extensions(app):
     login_manager.init_app(app)
     login_manager.login_view = "accounts.login"
     login_manager.login_message = u"请首先登录。"
-    login_manager.login_message_category = "info"
+    login_manager.login_message_category = "danger"
 
 def configure_modules(app, modules):
     

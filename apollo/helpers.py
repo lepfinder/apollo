@@ -3,7 +3,7 @@
 
 import requests
 import json
-from models import Book
+from models import Book,BookTag
 
 ##豆瓣接口api
 class DoubanClient():
@@ -33,9 +33,13 @@ class DoubanClient():
             book.pubdate = jsonObj['pubdate']
             book.rating = jsonObj['rating']['average']
 
+            # 处理标签
+            book.tags = jsonObj['tags']
+
             book.borrow_id = 0
             book.borrow_name = ''
             book.borrow_counts = 0
+            book.status = 0 #初始状态为空闲中
 
         return book
 

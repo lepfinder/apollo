@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="doc-search-header" id="content">
-  <div class="container text-center" >
-    <form class="form-wrapper cf" id="book_search" method="post" action="{{url_for('books.index')}}">
-    	<input type="hidden" name="page" id="page_index"/>
-    	<input type="text" name = "q" placeholder="输入书名、作者、标签或某人的姓名后回车搜索" value="{{q}}">
-	</form> 
-  	<p class=""><small>钱钟书说借书是恋爱的开始，一借一还就有了两次接触机会，而且自然而然不着痕迹。<span class="text-danger">寻找那本书和你的哪个人吧！</span></small></p>
-  </div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if not messages %}
+<div class="jumbotron">
+  <h3 class="text-center"><small>钱钟书说借书是恋爱的开始，一借一还就有了两次接触机会，而且自然而然不着痕迹。<span class="text-danger">寻找那本书和你的哪个人吧！</span></small>
+  </h3>
 </div>
+{% endif %}
+{% endwith %}
 
 <div class="container">
 	书香馆共有 {{page_obj.total}} 本书
@@ -25,8 +25,8 @@
 			    </td>
 		    	<td class="book-info">
 		    		<small>
-						<p>作者：{{a.author[:12]}}</p>
 						<p>书名：{{a.title[:10]}}</p>
+						<p>作者：{{a.author[:12]}}</p>
 						<p>出版社：{{a.publisher[:7]}}</p>
 						<p>价格：{{a.price}}</p>
 						<p>共享人：{{a.owner_name}}</p>

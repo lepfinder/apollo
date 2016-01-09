@@ -3,11 +3,30 @@
 {% block content %}
 <div class="container">
 
-	<div class="page-header"><h3>{{book.title}} <sub><small>{{book.author}}</small></sub></h3></div>
-
+	<div class="page-header">
+		<h3>{{book.title}} 
+			<sub>
+				<span class="label label-danger">
+					{% if book.status == 0 %}
+					<span class="glyphicon glyphicon-hand-right"></span>
+					此书正在空闲中，赶紧把我领走吧
+					{% endif %}
+					{% if book.status == 1 %}
+					<span class="glyphicon glyphicon-hand-right"></span>
+					此书正在被{{book.borrow_name}}童鞋借阅中，暂时不能被别人借阅了。
+					{% endif %}
+					{% if book.status == 2 %}
+					<span class="glyphicon glyphicon-hand-right"></span>
+					此书正在被<span class="text-warning">{{book.borrow_name}}</span>童鞋归还中，马上就可以借阅了。
+					{% endif %}
+				</span>
+			</sub>
+		</h3>
+	</div>
     <div class="row">
      	<div class="col-md-8">
 	      	<table>
+	      		
 	      		<tr>
 		      		<td width="110px;">
 				        <a href="#" class="thumbnail">
@@ -16,8 +35,8 @@
 				    </td>
 			    	<td class="book-info">
 			    		<small>
-							<p>作者：{{book.author}}</p>
 							<p>书名：{{book.title}}</p>
+							<p>作者：{{book.author}}</p>
 							<p>出版社：{{book.publisher}}</p>
 							<p>价格：{{book.price}}</p>
 							<p>共享人：{{book.owner_name}}</p>
@@ -25,16 +44,8 @@
 							<p>借阅次数：{{book.borrow_counts}}</p>
 						</small>
 					</td>
-					
-	    		</tr>
-	        </table>
-	        <p>
-	        	<div class="text-success">内容简介：</div>
-	        	<small>&nbsp;&nbsp;&nbsp;&nbsp;{{book.summary}}</small>
-	    	</p>
-	    	<div><br/>
-	    		<div class="col-md-6">
-			        {% if current_user.is_authenticated %}
+					<td valign="bottom">
+					{% if current_user.is_authenticated %}
 
 		    			{% if current_user.id | int == book.borrow_id %}
 			    		<a class="btn btn-primary btn-block" onClick="reback({{book.id}})"><span class="glyphicon glyphicon-book"></span> 我要还这本书</a>
@@ -44,6 +55,17 @@
 			    		{% endif %}
 			    		
 		    		{% endif %}
+					</td>
+	    		</tr>
+	    		
+	        </table>
+	        <p>
+	        	<div class="text-success">内容简介：</div>
+	        	<small>&nbsp;&nbsp;&nbsp;&nbsp;{{book.summary}}</small>
+	    	</p>
+	    	<div><br/>
+	    		<div class="col-md-6">
+			        
 
 		    	</div>
 	    	</div>
@@ -56,7 +78,8 @@
 	    		<small>
 					<p>借阅人：{{a.account_name}}</p>
 					<p>借阅时间：{{a.create_time}}</p>
-					<p>归还时间：{{a.real_reback_time}}</p>
+					<p>约定归还时间：{{a.reback_time}}</p>
+					<p>实际归还时间：{{a.real_reback_time}}</p>
 				</small>
 			</div>
       		{% endfor %}
@@ -72,19 +95,13 @@
 <script type="text/javascript">
 
 	function reback(book_id){
-		$.post("/books/reback/",{
-			book_id : book_id
-		},function(data){
-			history.go(0)
-		});
+		if(confirm("确定要归还此书？")){
+			location.href="/books/reback/"+book_id;
+		}
 	}
 
 	function borrow(book_id){
-		$.post("/books/borrow/",{
-			book_id : book_id
-		},function(data){
-			history.go(0)
-		});
+		location.href="/books/borrow/"+book_id;
 	}
 	
 </script>

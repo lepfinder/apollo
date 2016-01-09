@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-	<title>书香馆-千丁</title>
+	<title>書香館-千丁</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- 新 Bootstrap 核心 CSS 文件 -->
 	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -20,7 +20,7 @@
 	  <div class="container">
 	    <!-- Brand and toggle get grouped for better mobile display -->
 	    <div class="navbar-header">
-	      <a class="navbar-brand" href="/books/">书香馆</a>
+	      <a class="navbar-brand" href="/books/">書香館</a>
 	    </div>
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		      <ul class="nav navbar-nav">
@@ -29,7 +29,16 @@
 		        <li><a href="{{url_for('books.share')}}" >我要共享</a></li>
 
 		      </ul>
+
 		      <ul class="nav navbar-nav navbar-right">
+		      	<li>
+		      	  <form class="navbar-form" id="book_search" method="post" action="{{url_for('books.index')}}">
+			        <div class="form-group">
+	    	    	  <input type="hidden" name="page" id="page_index"/>
+			          <input type="text" name="q" class="form-control" placeholder="Search">
+			        </div>
+			      </form>
+		      	</li>
 		        <li><a href="{{url_for('books.my')}}" >{{current_user.name}}</a></li>
 		        {% if current_user.is_authenticated %}
 		        <li><a href="{{url_for('accounts.logout')}}" >退出</a></li>
@@ -51,11 +60,12 @@
 	    {% for category, message in messages %}
 		<div class="alert alert-{{ category }}" style="margin-top:15px;">  
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> 
-			   {{ message }} 
+			   提示：{{ message }} 
 		</div>  
 	    {% endfor %}
 	  {% endif %}
 	{% endwith %}
+
 	</div>
 
 	

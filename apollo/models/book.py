@@ -31,6 +31,7 @@ class Book(db.Model):
     borrow_log_id = db.Column(db.Integer)
     borrow_counts = db.Column(db.Integer)
     status = db.Column(db.Integer)
+    recommend = db.Column(db.Text)
 
 class BorrowLog(db.Model):
     __tablename__ = 'borrow_log'

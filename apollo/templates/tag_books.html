@@ -12,18 +12,11 @@
 {% endwith %}
 
 <div class="container">
-	<div class="row label-box" >
-		<span>&nbsp;&nbsp;<strong>热门标签：</strong></span>
-		{% for tag in tag_list %}
-		<span class="label label-default">
-			<a href="{{url_for('books.tag_books',tag_id=tag.id)}}">{{tag.name}}</a>
-		</span>
-      	{% endfor %}
-      	<a href="{{url_for('books.tags')}}"><small>更多</small></a>
-		<p style="margin-top: 10px;" class="text-muted">&nbsp;&nbsp;<small>书香馆共有 {{page_obj.total}} 本书</small></p>
+	<div class="row">
+		<p style="margin-top: 10px;" class="text-muted">&nbsp;&nbsp;<small>{{tag.name}}下共有 {{books.rowcount}} 本书</small></p>
 	</div>
     <div class="row">
-      {% for a in page_obj.items %}
+      {% for a in books %}
       <div class="col-xs-6 col-md-4 col-lg-3">
       	<table>
       		<tr>
@@ -48,33 +41,6 @@
       {% endfor %}
       
     </div>
-    <div class="row">
-    	<nav class="pull-right">
-
-		  <ul class=pagination>
-		  	<li>
-		      <a href="javascript:go_page(1)" aria-label="Previous">
-		        <span aria-hidden="true">&laquo;</span>
-		      </a>
-		    </li>
-			  {%- for page in page_obj.iter_pages() %}
-			    {% if page %}
-			      {% if page != page_obj.page %}
-			        <li><a href="javascript:go_page({{page}})">{{ page }}</a></li>
-			      {% else %}
-			        <li class="active"><a>{{ page }}</a></li>
-			      {% endif %}
-			    {% else %}
-			    {% endif %}
-			  {%- endfor %}
-			  <li>
-		      <a href="javascript:go_page({{page_obj.pages}})" aria-label="Next">
-		        <span aria-hidden="true">&raquo;</span>
-		      </a>
-		    </li>
-		  </ul>
-		</nav>
-    </div>
 </div>
 {% endblock %}
 
@@ -85,8 +51,6 @@
 		$("#page_index").val(page);
 		$("#book_search").submit();
 	}
-
-	
 </script>
 
 {% endblock %}

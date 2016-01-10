@@ -14,6 +14,7 @@ DEFAULT_APP_NAME = 'apollo'
 DEFAULT_MODULES = (
     (views.books, "/books"),
     (views.accounts, "/accounts"),
+    (views.api, "/api"),
 )
 
 def create_app(config=None, modules=None):

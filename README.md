@@ -39,11 +39,16 @@ https://api.douban.com/v2/book/isbn/9787513408165
 
 ### TODO
 
-登录
-图书分享，推荐词
-还书添加确认流程
-添加图书评论
 添加图书标签
+
+登录
+http://localhost:5000/accounts/oa_login/?login_name=xiyang&name=sadf
+图书分享，推荐词
+
+还书添加确认流程
+
+添加图书评论
+
 
 
 - 图书标签
@@ -53,4 +58,6 @@ https://api.douban.com/v2/book/isbn/9787513408165
 - 优化分享流程
 - 添加社交属性
 
+
+http://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
 

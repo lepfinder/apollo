@@ -64,10 +64,12 @@
 	        	<small>&nbsp;&nbsp;&nbsp;&nbsp;{{book.summary}}</small>
 	    	</p>
 	    	<div><br/>
-	    		<div class="col-md-6">
-			        
-
-		    	</div>
+	    	  {% if book.recommend %}
+    		  <p>
+	        	<div class="text-success">推荐语：</div>
+	        	<small>&nbsp;&nbsp;&nbsp;&nbsp;{{book.recommend}}</small>
+	    	  </p>
+	    	  {% endif %}
 	    	</div>
     	</div>
      	<div class="col-md-4">

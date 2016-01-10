@@ -11,7 +11,7 @@ from flask import Module, Response, request, flash, jsonify, g, current_app,\
 from flask.ext.login import login_required,current_user
 from sqlalchemy import or_
 
-from apollo.models import Book,BorrowLog,Tag,BookTag
+from apollo.models import Res,Book,BorrowLog,Tag,BookTag
 from apollo.extensions import db
 from apollo.helpers import DoubanClient
 
@@ -22,6 +22,7 @@ books = Module(__name__)
 def index():
     page = 1
     keywords = ''
+    tag_list = Tag.query.order_by(Tag.counts.desc()).limit(10)
 
     if request.method == "POST":
         page = request.form['page']
@@ -35,24 +36,38 @@ def index():
         else:
             page_obj = Book.query.filter(or_(Book.title.ilike('%'+keywords+"%"),Book.author.ilike('%'+keywords+"%"),Book.owner_name.ilike('%'+keywords+"%"))).order_by(Book.id.desc()).paginate(page, Book.PER_PAGE, False)
     else:
-        page_obj = Book.query.paginate(page, Book.PER_PAGE, False)
+        page_obj = Book.query.order_by(Book.id.desc()).paginate(page, Book.PER_PAGE, False)
 
-    return render_template("index.html",q = keywords, page_obj = page_obj)
+    return render_template("index.html",q = keywords,tag_list = tag_list, page_obj = page_obj)
+
+
+# 关于页
+@books.route("/about/", methods=("GET","POST"))
+def about():
+    return render_template("about.html")
 
 # 个人主页
 @books.route("/my/", methods=("GET","POST"))
 @login_required
 def my():
     current_borrow_book = Book.query.filter_by(borrow_id=current_user.id).first()
+    current_borrow_log = None
+    surplus_days = 0
+    if current_borrow_book:
+        current_borrow_log = BorrowLog.query.filter_by(id=current_borrow_book.borrow_log_id).first()
+        #剩余天数
+        surplus_days = (datetime.datetime.combine(current_borrow_log.reback_time, datetime.datetime.min.time()) - datetime.datetime.now()).days
+
     share_book_list = Book.query.filter_by(owner_id=current_user.id).order_by(Book.id.desc()).limit(10)
 
     #借阅历史
     borrow_log_list = BorrowLog.query.filter_by(account_id = current_user.id).order_by(BorrowLog.id.desc()).limit(10)
-
+    
     return render_template("my_books.html", 
             current_borrow_book = current_borrow_book,
             share_book_list = share_book_list,
-            borrow_log_list = borrow_log_list
+            borrow_log_list = borrow_log_list,
+            surplus_days = surplus_days
         )
 
 # 查看单个图书详情
@@ -68,31 +83,22 @@ def view(book_id):
         book = book,
         borrow_log_list = borrow_log_list)
 
-# 获取豆瓣图书信息
-@books.route("/douban_book_info/", methods=("GET","POST"))
-def douban_book_info():
-    isbn = request.args.get('isbn', '')
-    print "douban_book_info , isbn=",isbn
-
-    r = requests.get('http://api.douban.com/v2/book/isbn/%s' % isbn)
-
-    return r.text
-
 # 我要分享
 @books.route("/share/", methods=("GET","POST"))
 @login_required
 def share():
     if request.method == "GET":
         return render_template("share.html")
+
     isbn = request.form['isbn']
+    recommend = request.form['recommend']
     client = DoubanClient()
     book = client.parse_book_info(isbn)
-
-    print current_user.name
 
     if book:
         book.owner_id = current_user.id
         book.owner_name = current_user.name
+        book.recommend = recommend
         
         db.session.add(book)
         db.session.commit()
@@ -103,7 +109,7 @@ def share():
                 t = Tag()
                 t.name = tag['name']
                 t.counts = int(tag['count'])
-                t.create_time = datetime.datetime.now().strftime('%Y-%m-%y %H:%M:%S')
+                t.create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 db.session.add(t)
                 db.session.commit()
             else:
@@ -116,17 +122,11 @@ def share():
             db.session.add(bookTag)
             db.session.commit()
 
-        res = {
-            "code" : 200,
-            "message" : "分享成功"
-        }
+        res = Res(200,"分享成功")
     else:
-        res = {
-            "code" : 400,
-            "message" : "分享失败"
-        }
+        res = Res(400,"分享失败")
 
-    return jsonify(res)
+    return jsonify(res.serialize())
 
 # 还书
 @books.route("/reback/<int:book_id>/", methods=("GET","POST"))
@@ -141,7 +141,7 @@ def reback(book_id):
 
     #记录还书时间
     borrow_log = BorrowLog.query.filter_by(id = book.borrow_log_id).first()
-    borrow_log.real_reback_time = datetime.datetime.now().strftime('%Y-%m-%y %H:%M:%S')
+    borrow_log.real_reback_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     db.session.commit()
     
@@ -168,8 +168,8 @@ def borrow(book_id):
 
     # 记入借阅历史
     borrow_log = BorrowLog(current_user.id,current_user.name,book_id,book.title)
-    borrow_log.create_time = datetime.datetime.now().strftime('%Y-%m-%y %H:%M:%S')
-    borrow_log.reback_time = (datetime.datetime.now()+datetime.timedelta(days=14)).strftime('%Y-%m-%y')
+    borrow_log.create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    borrow_log.reback_time = (datetime.datetime.now()+ datetime.timedelta(days=14)).strftime('%Y-%m-%d')
 
     db.session.add(borrow_log)
 
@@ -186,3 +186,23 @@ def borrow(book_id):
 
     flash(u"借书成功，请一定要按时归还吆。","danger")
     return redirect(url_for("books.my"))
+
+# 查看某个标签的图书
+@books.route("/tag/<int:tag_id>/", methods=("GET","POST"))
+def tag_books(tag_id):
+    print "tag_id=",tag_id
+    tag = Tag.query.filter_by(id = tag_id).first()
+
+    sql = "select b.* from book_tag a left join books b on a.book_id = b.id where a.tag_id=%d" % tag_id
+    books = db.engine.execute(sql)
+
+    return render_template("tag_books.html",tag = tag,books = books)
+
+# 查看某个标签的图书
+@books.route("/tags/", methods=("GET","POST"))
+def tags():
+    tags = Tag.query.all()
+
+    return render_template("tags.html",tags = tags)
+
+

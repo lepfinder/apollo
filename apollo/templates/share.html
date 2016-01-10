@@ -9,28 +9,30 @@
 	<div class="row">
 		<div class="page-header"> <h3>我要共享图书 ~</h3></div>
 		
-		<form class="form-horizontal" id = "step1" action="javascript:preview()">
-		  <div class="alert alert-info">
-			<p>
-			  	<larger class="text-danger">提示：</larger>
-			  	<span class="">请输入图书的ISBN编号，系统会自动获取图书信息，确认后即可完成共享。</span>
-			</p>
-	      </div>
-		  <div class="form-group">
-		    <label for="inputEmail3" class="col-sm-2 control-label">ISBN：</label>
-		    <div class="col-sm-6">
-		      <input type="input" class="form-control" name="isbn" id="isbn" placeholder="请输入图书背面的isbn编号后，点击查询" value="">
-		    </div>
+		<form  class="form-horizontal" action="javascript:preview()">
+		  <div id="step1">
+			  <div class="alert alert-info">
+				<p>
+				  	<larger class="text-danger">提示：</larger>
+				  	<span class="">请输入图书的ISBN编号，系统会自动获取图书信息，确认后即可完成共享。</span>
+				</p>
+		      </div>
+			  <div class="form-group">
+			    <label for="inputEmail3" class="col-sm-2 control-label">ISBN：</label>
+			    <div class="col-sm-6">
+			      <input type="input" class="form-control" name="isbn" id="isbn" placeholder="请输入图书背面的isbn编号后，点击查询" value="9787308146043">
+			    </div>
+			  </div>
+			  
+			  <div class="form-group">
+			    <div class="col-sm-offset-2 col-sm-3">
+			      <a onClick="preview()"  class="btn btn-primary btn-block"><span class="glyphicon glyphicon-share"></span> <span id="preview_btn">查询豆瓣</span></a>
+			    </div>
+			  </div>
 		  </div>
-		  
-		  <div class="form-group">
-		    <div class="col-sm-offset-2 col-sm-3">
-		      <a onClick="preview()"  class="btn btn-primary btn-block"><span class="glyphicon glyphicon-share"></span> <span id="preview_btn">查询豆瓣</span></a>
-		    </div>
-		  </div>
-		</form>
+		
 
-		<div class="" id="step2" style="display: none;">
+		  <div id="step2" class="" style="display: none;">
 			<div class="row">
 				<div class="col-md-2">
 					<img id="pre_img" width="120" height="168"/>
@@ -43,6 +45,17 @@
 					<p id="pre_price">价格：</p>
 					<p id="pre_summary">简介：</p>
 				</div>
+			</div>
+
+			<div class="row" style="margin-top:20px;">
+				<div class="form-group" >
+			      <label for="login_name" class="col-sm-2 control-label">
+			      	<span class="pull-right">推荐语：</span></label>
+			      <div class="col-sm-6">
+			        <textarea id="recommend" name="recommend" cols="90" rows="6"></textarea>
+			      </div>
+			    </div>
+				
 			</div>
 		  
 			<div class="row">
@@ -57,7 +70,11 @@
 				  </p>
 			    </div>
 		    </div>
-		</div>
+
+		    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+		  </div>
+
+		</form>
 	</div>
 </div>
 {% endblock %}
@@ -71,7 +88,7 @@
 	function preview(){
 		if($("#isbn").val()){
 			$("#preview_btn").text("正在查询，请稍等......");
-			$.get("/books/douban_book_info/",{
+			$.get("/api/douban_book_info/",{
 				isbn : $("#isbn").val()
 			},function(data){
 				res = JSON.parse(data)
@@ -99,7 +116,8 @@
 
 	function share(){
 		$.post("/books/share/",{
-			isbn : $("#isbn").val()
+			isbn : $("#isbn").val(),
+			recommend : $("#recommend").val()
 		},function(data){
 			if(data.code == 200){
 				location.href="/books/"

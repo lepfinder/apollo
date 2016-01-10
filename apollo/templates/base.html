@@ -7,13 +7,7 @@
 	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/styles.css">
 	<link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico" media="screen" />
-	<style>
-		.page-header{
-			margin-top:0px;
-		}
-	</style>
 	{% block css %}{% endblock %}
-
 </head>
 <body>
 	<nav class="navbar navbar-inverse">
@@ -27,7 +21,7 @@
 		        <li><a href="{{url_for('books.index')}}">全部图书</a></li>
 		        <li><a href="{{url_for('books.my')}}">我的图书</a></li>
 		        <li><a href="{{url_for('books.share')}}" >我要共享</a></li>
-
+		        <li><a href="{{url_for('books.about')}}" >君子之约</a></li>
 		      </ul>
 
 		      <ul class="nav navbar-nav navbar-right">
@@ -35,7 +29,7 @@
 		      	  <form class="navbar-form" id="book_search" method="post" action="{{url_for('books.index')}}">
 			        <div class="form-group">
 	    	    	  <input type="hidden" name="page" id="page_index"/>
-			          <input type="text" name="q" class="form-control" placeholder="Search">
+			          <input type="text" name="q" class="form-control" value="{{q}}" placeholder="Search">
 			        </div>
 			      </form>
 		      	</li>

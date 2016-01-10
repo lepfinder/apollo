@@ -32,7 +32,7 @@ def register():
         flash("the username has already exists,please change another one.",'danger')
     else:
         account = Account(login_name,name,passwd)
-        account.create_time = datetime.datetime.now().strftime('%Y-%d-%y %H:%M:%S')
+        account.create_time = datetime.datetime.now().strftime('%Y-%d-%d %H:%M:%S')
 
         db.session.add(account)
         db.session.commit()
@@ -57,8 +57,6 @@ def login():
             account = Account.query.filter_by(login_name=login_name).first()
             
             if account:
-                user = Account(account.id,account.name,account.create_time)
-
                 if login_user(account):     
                     return redirect(request.args.get("next") or url_for("books.index"))
             else:
@@ -67,6 +65,36 @@ def login():
         else:
             flash ("Sorry, please check your username or password!","danger")
     return render_template("login.html")
+
+# 用户登录
+@accounts.route("/oa_login/",methods=["GET","POST"])
+def oa_login():
+    login_name = ''
+    name = ''
+    if request.method == "POST":
+        login_name = request.form['login_name']
+        name = request.form['name']
+    else:
+        login_name = request.args.get('login_name','')
+        name = request.args.get('name','')
+    print "oa_login,login_name =",login_name,",name =",name
+
+
+    if login_name and name:
+        account = Account.query.filter_by(login_name=login_name).first()
+        
+        if not account: # 如果不存在，首先创建用户，然后默认登录
+            account = Account(login_name,name,'123456')
+            account.create_time = datetime.datetime.now().strftime('%Y-%d-%d %H:%M:%S')
+
+            db.session.add(account)
+            db.session.commit()
+
+        if login_user(account):     
+            return redirect(request.args.get("next") or url_for("books.index"))
+
+    return redirect(request.args.get("next") or url_for("books.index"))
+
 
 # 用户登出
 @accounts.route("/logout/")

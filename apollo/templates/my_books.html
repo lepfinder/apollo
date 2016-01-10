@@ -8,7 +8,7 @@
 			<div class="page-header">
 				<h3>当前借阅的图书
 					{% if current_borrow_book %}
-					<sub><small>归还倒计时：<span class="text-danger" style="font-size: 1.8em;"><em>8</em></span> 天</small></sub>
+					<sub><small>归还倒计时：<span class="text-danger" style="font-size: 1.8em;"><em>{{surplus_days}}</em></span> 天</small></sub>
 	    			{% endif %}
 
 				</h3>
@@ -46,11 +46,8 @@
 			你当前没有借阅任何图书。
     		{% endif %}
 
-
-
-
 			<div class="page-header"><h3>我分享的图书</h3></div>
-		    <div class="row">
+		    <div class="row" style="padding-left: 15px;">
 		      {% for a in share_book_list %}
 		      <div class="col-xs-6 col-md-4 col-lg-4">
 		      	<table>
@@ -63,9 +60,9 @@
 				    	<td class="book-info">
 				    		<small>
 								<p>书名：{{a.title[:10]}}</p>
+								<p>豆瓣评分：{{a.rating}}</p>
 								<p>作者：{{a.author[:12]}}</p>
 								<p>出版社：{{a.publisher[:7]}}</p>
-								<p>价格：{{a.price}}</p>
 								<p>共享人：{{a.owner_name}}</p>
 								<p>当前持有人：{{a.borrow_name}}</p>
 							</small>
@@ -74,6 +71,9 @@
 		        </table>
 		      </div>
 		      {% endfor %}
+		      {% if not share_book_list %}
+				你当前没有分享任何图书。 <a href="{{url_for('books.share')}}">我要共享</a>
+	    	  {% endif %}
 		    </div>
 		</div>
 

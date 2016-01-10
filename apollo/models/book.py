@@ -72,4 +72,14 @@ class BookTag(db.Model):
     tag_id = db.Column(db.Integer)
     count = db.Column(db.Integer)
 
+class Comment(db.Model):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer,primary_key=True)
+
+    book_id = db.Column(db.Integer)
+    account_id = db.Column(db.Integer)
+    account_name = db.Column(db.String(64))
+    content = db.Column(db.Text)
+    create_time = db.Column(db.DateTime)
 

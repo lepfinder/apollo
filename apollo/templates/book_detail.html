@@ -62,15 +62,44 @@
 	        <p>
 	        	<div class="text-success">内容简介：</div>
 	        	<small>&nbsp;&nbsp;&nbsp;&nbsp;{{book.summary}}</small>
-	    	</p>
-	    	<div><br/>
+	    	</p><br/>
+
+	    	<div>
 	    	  {% if book.recommend %}
     		  <p>
-	        	<div class="text-success">推荐语：</div>
+	        	<div class="text-success">分享人推荐语：</div>
 	        	<small>&nbsp;&nbsp;&nbsp;&nbsp;{{book.recommend}}</small>
 	    	  </p>
 	    	  {% endif %}
+	    	</div><br/>
+	    	<div class="comment-box">
+	    	  {% if comments %}
+    		  <p>
+	        	<div class="text-success">评价：</div>
+	        	{% for a in comments %}
+	        	<div class="well">
+		    		<small>
+						<p class="text-muted">
+							{{a.account_name}} 发表于 {{a.create_time}}</p><hr/>
+						<p>{{a.content}}</p>
+					</small>
+				</div>
+	      		{% endfor %}
+	    	  </p>
+	    	  {% endif %}
+	    	</div><br/>
+
+			
+	    	<hr/>
+    	    <form action="{{url_for('books.comment')}}" method="post">
+	    	<div>
+	    		<input type="hidden" name="book_id" value="{{book.id}}"/>
+	    		我来说两句：<br/><textarea name="content" id="" cols="90" rows="5"></textarea>
+	    		<input type="submit" class="btn" value="发表"/>
 	    	</div>
+	    	</form>
+
+	    	<br/><br/><br/>
     	</div>
      	<div class="col-md-4">
      		<div class="page-header"><h4>借阅历史</h4></div>

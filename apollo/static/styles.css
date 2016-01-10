@@ -1,3 +1,12 @@
+.content{
+	min-height: 760px;
+}
+
+#right-box{
+	margin-bottom: 0px;
+	color: #aaa;
+}
+
 .page-header{
 	margin-top:0px;
 }
@@ -26,3 +35,14 @@
 }
 
 .my_tag{margin-top:2px;margin-bottom: 2px;}
+
+
+.comment-box .well{
+	padding-bottom: 5px;
+	margin-bottom: 10px;
+}
+
+.comment-box hr{
+	margin-top: 2px;
+	margin-bottom: 10px;
+}

@@ -11,7 +11,7 @@ from flask import Module, Response, request, flash, jsonify, g, current_app,\
 from flask.ext.login import login_required,current_user
 from sqlalchemy import or_
 
-from apollo.models import Res,Book,BorrowLog,Tag,BookTag
+from apollo.models import Res,Book,BorrowLog,Tag,BookTag,Comment
 from apollo.extensions import db
 from apollo.helpers import DoubanClient
 
@@ -79,9 +79,13 @@ def view(book_id):
     #借阅历史
     borrow_log_list = BorrowLog.query.filter_by(book_id = book.id).order_by(BorrowLog.id.desc()).limit(10)
 
+    #评论
+    comments = Comment.query.filter_by(book_id = book.id).order_by(Comment.id.desc()).limit(10)
+
     return render_template("book_detail.html", 
         book = book,
-        borrow_log_list = borrow_log_list)
+        borrow_log_list = borrow_log_list,
+        comments = comments)
 
 # 我要分享
 @books.route("/share/", methods=("GET","POST"))
@@ -205,4 +209,22 @@ def tags():
 
     return render_template("tags.html",tags = tags)
 
+# 查看某个标签的图书
+@books.route("/comment/", methods=("GET","POST"))
+def comment():
+    content = request.form['content']
+    book_id = request.form['book_id']
+
+    print content,book_id
+    comment = Comment()
+    comment.content = content
+    comment.book_id = book_id
+    comment.account_id = current_user.id
+    comment.account_name = current_user.name
+    comment.create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    db.session.add(comment)
+    db.session.commit()
+
+    flash(u"评价成功","info")
+    return redirect(url_for("books.view",book_id = book_id))
 

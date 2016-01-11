@@ -18,7 +18,10 @@
 1. 下载并安装依赖库
 git clone git@github.com:lepfinder/apollo.git
 cd apollo
+pip install virtualenv
 virtualenv venv
+
+
 . venv/bin/activate
 pip install -r requirments.txt
 
@@ -30,6 +33,15 @@ pip install -r requirments.txt
 python manager.py runserver
 nohup python manager.py runserver &
 ```
+
+### 问题
+1. 如果机器有两个python环境
+virtualenv --python=/usr/bin/X11/python2.7 venv
+修改系统默认的环境为2.7的，可以用软连接的形式
+
+2. _mysql.c:29:20: fatal error: Python.h: No such file or directory
+sudo apt-get install python-dev
+
 
 ### 系统截图演示
 首页全部图书

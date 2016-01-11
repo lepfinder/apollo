@@ -61,7 +61,7 @@
 			<div class="row">
 			    <div class=" col-sm-4">
 			      <p style="margin-top: 15px;">
-				      <button onClick="share()"  class="btn btn-primary btn-block"><span class="glyphicon glyphicon-share"></span> 确认无误，就是它了</button>
+				      <button onClick="share()" id="ok" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-share"></span> 确认无误，就是它了</button>
 				  </p>
 			    </div>
 			    <div class=" col-sm-2">
@@ -115,6 +115,8 @@
 	}
 
 	function share(){
+		$("#ok").attr("disabled","true")
+		$("#ok").html("正在处理中，请稍等")
 		$.post("/books/share/",{
 			isbn : $("#isbn").val(),
 			recommend : $("#recommend").val()

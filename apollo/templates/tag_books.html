@@ -12,8 +12,17 @@
 {% endwith %}
 
 <div class="container">
+	<div class="row label-box" >
+		<span>&nbsp;&nbsp;<strong>热门标签：</strong></span>
+		{% for tag in tag_list %}
+		<span class="label label-default">
+			<a href="{{url_for('books.tag_books',tag_id=tag.id)}}">{{tag.name}}</a>
+		</span>
+      	{% endfor %}
+      	<a href="{{url_for('books.tags')}}"><small>更多</small></a>
+	</div>
 	<div class="row">
-		<p style="margin-top: 10px;" class="text-muted">&nbsp;&nbsp;<small>{{tag.name}}下共有 {{books.rowcount}} 本书</small></p>
+		<p style="margin-top: 10px;" class="text-muted">&nbsp;&nbsp;<small><span class="text-success">"{{tag.name}}"</span>下共有 {{books.rowcount}} 本书</small></p>
 	</div>
     <div class="row">
       {% for a in books %}

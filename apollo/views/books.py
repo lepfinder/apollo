@@ -197,11 +197,13 @@ def borrow(book_id):
 def tag_books(tag_id):
     print "tag_id=",tag_id
     tag = Tag.query.filter_by(id = tag_id).first()
+    tag_list = Tag.query.order_by(Tag.counts.desc()).limit(10)
+
 
     sql = "select b.* from book_tag a left join books b on a.book_id = b.id where a.tag_id=%d" % tag_id
     books = db.engine.execute(sql)
 
-    return render_template("tag_books.html",tag = tag,books = books)
+    return render_template("tag_books.html",tag = tag,books = books,tag_list=tag_list)
 
 # 查看某个标签的图书
 @books.route("/tags/", methods=("GET","POST"))

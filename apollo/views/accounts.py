@@ -73,10 +73,10 @@ def oa_login():
     name = ''
     if request.method == "POST":
         login_name = request.form['login_name']
-        name = request.form['name']
+        name = request.form['name'].encode("utf-8")
     else:
         login_name = request.args.get('login_name','')
-        name = request.args.get('name','')
+        name = request.args.get('name','').encode("utf-8")
     print "oa_login,login_name =",login_name,",name =",name
 
 

@@ -35,7 +35,6 @@
 				    </td>
 			    	<td class="book-info">
 			    		<small>
-							<p>书名：{{book.title}}</p>
 							<p>作者：{{book.author}}</p>
 							<p>出版社：{{book.publisher}}</p>
 							<p>价格：{{book.price}}</p>
@@ -72,6 +71,8 @@
 	    	  </p>
 	    	  {% endif %}
 	    	</div><br/>
+	    	<!-- 登录后可以评价 -->
+	        {% if current_user.is_authenticated %}
 	    	<div class="comment-box">
 	    	  {% if comments %}
     		  <p>
@@ -88,8 +89,8 @@
 	    	  </p>
 	    	  {% endif %}
 	    	</div><br/>
+    	   {% endif %}
 
-			
 	    	<hr/>
     	    <form action="{{url_for('books.comment')}}" method="post">
 	    	<div>

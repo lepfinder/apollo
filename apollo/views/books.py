@@ -142,6 +142,7 @@ def reback(book_id):
     # 修改图书属性
     book.borrow_id = None
     book.borrow_name = ''
+    book.status = 0 #还书成功，将状态恢复为未占用
 
     #记录还书时间
     borrow_log = BorrowLog.query.filter_by(id = book.borrow_log_id).first()
@@ -209,13 +210,13 @@ def tags():
 
     return render_template("tags.html",tags = tags)
 
-# 查看某个标签的图书
+# 添加评论
 @books.route("/comment/", methods=("GET","POST"))
 def comment():
     content = request.form['content']
     book_id = request.form['book_id']
 
-    print content,book_id
+    print "add comment:",content,book_id
     comment = Comment()
     comment.content = content
     comment.book_id = book_id

@@ -21,13 +21,13 @@ books = Module(__name__)
 @books.route("/", methods=("GET","POST"))
 def index():
     page = 1
-    keywords = ''
+    keywords = u''
     tag_list = Tag.query.order_by(Tag.counts.desc()).limit(10)
 
     if request.method == "POST":
         page = request.form['page']
         keywords = request.form['q']
-
+        keywords = keywords.encode("utf-8")
         page = int(page) if page else 1
 
         print "keywords=",keywords,"page=",page
@@ -38,7 +38,7 @@ def index():
     else:
         page_obj = Book.query.order_by(Book.id.desc()).paginate(page, Book.PER_PAGE, False)
 
-    return render_template("index.html",q = keywords,tag_list = tag_list, page_obj = page_obj)
+    return render_template("index.html",q = "",tag_list = tag_list, page_obj = page_obj)
 
 
 # 关于页

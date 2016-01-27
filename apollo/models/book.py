@@ -30,6 +30,7 @@ class Book(db.Model):
     borrow_id = db.Column(db.Integer)
     borrow_log_id = db.Column(db.Integer)
     borrow_counts = db.Column(db.Integer)
+    # 图书状态 0 ：空闲中 1：借阅中 2：归还中
     status = db.Column(db.Integer)
     recommend = db.Column(db.Text)
 

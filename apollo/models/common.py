@@ -18,6 +18,9 @@ class Res():
 
 class Syslog(db.Model):
     __tablename__ = 'syslog'
+    
+    PER_PAGE = 20
+
 
     id = db.Column(db.Integer,primary_key=True)
 

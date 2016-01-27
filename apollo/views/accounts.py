@@ -115,3 +115,13 @@ def logout():
     flash(u"已退出登录.",'info')
     return redirect(url_for("books.index"))
 
+
+# 查看操作日志
+@accounts.route("/syslog/", methods=("GET","POST"))
+@accounts.route("/syslog/<int:page>/", methods=("GET","POST"))
+def syslog(page=1):
+
+    page_obj = Syslog.query.order_by(Syslog.id.desc()).paginate(page, Syslog.PER_PAGE, False)
+
+    return render_template("syslog.html", page_obj = page_obj)
+

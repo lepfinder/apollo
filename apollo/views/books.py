@@ -155,9 +155,9 @@ def reback(book_id):
     book = Book.query.filter_by(id = book_id).first()
 
     # 修改图书属性
-    book.borrow_id = None
-    book.borrow_name = ''
-    book.status = 0 #还书成功，将状态恢复为未占用
+    #book.borrow_id = None
+    #book.borrow_name = ''
+    book.status = 2 #还书成功，将状态恢复为2  0 ：空闲中 1：借阅中 2：归还中
 
     #记录还书时间
     borrow_log = BorrowLog.query.filter_by(id = book.borrow_log_id).first()
@@ -184,7 +184,9 @@ def borrow(book_id):
     book = Book.query.filter_by(id = book_id).first()
 
     # 检查当前图书的状态，如果被别人借阅中，则不能借入
-
+    if book.status == 1:
+        flash(u"借书失败，当前图书已经被别人借阅了。","danger")
+        return redirect(url_for("books.view",book_id=book_id))
 
     # 记入借阅历史
     borrow_log = BorrowLog(current_user.id,current_user.name,book_id,book.title)

@@ -7,10 +7,12 @@ import datetime
 from flask import Module, Response, request, flash, jsonify, g, current_app,\
     abort, redirect, url_for, session, render_template
 
-from flask.ext.login import login_user,logout_user
+from flask.ext.login import login_user,logout_user,current_user
 
-from apollo.models import Book,Account
+from apollo.models import Book,Account,Syslog
 from apollo.extensions import db,login_manager
+from apollo.helpers import save_syslog
+
 
 from books import books
 
@@ -57,7 +59,10 @@ def login():
             account = Account.query.filter_by(login_name=login_name).first()
             
             if account:
-                if login_user(account):     
+                if login_user(account): 
+                    
+                    save_syslog(account,request.remote_addr,u"登录成功")
+
                     return redirect(request.args.get("next") or url_for("books.index"))
             else:
                 flash ("Sorry, please check your username or password!","danger")
@@ -90,7 +95,11 @@ def oa_login():
             db.session.add(account)
             db.session.commit()
 
-        if login_user(account):     
+            save_syslog(account,request.remote_addr,u"创建用户")
+
+        if login_user(account): 
+            save_syslog(account,request.remote_addr,u"登录成功")
+    
             return redirect(request.args.get("next") or url_for("books.index"))
 
     return redirect(request.args.get("next") or url_for("books.index"))
@@ -99,7 +108,10 @@ def oa_login():
 # 用户登出
 @accounts.route("/logout/")
 def logout():
+    save_syslog(current_user,request.remote_addr,u"登出")
+
     logout_user()
+
     flash(u"已退出登录.",'info')
     return redirect(url_for("books.index"))
 

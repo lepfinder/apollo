@@ -64,11 +64,13 @@
 				      <button onClick="share()" id="ok" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-share"></span> 确认无误，就是它了</button>
 				  </p>
 			    </div>
+			    <!--
 			    <div class=" col-sm-2">
 			      <p style="margin-top: 15px;">
 				      <button onClick="goStep1()"  class="btn btn-success btn-block"><span class="glyphicon glyphicon-share"></span> 返回上一步</button>
 				  </p>
 			    </div>
+				-->
 		    </div>
 
 		    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
@@ -124,7 +126,8 @@
 			if(data.code == 200){
 				location.href="/books/"
 			}else{
-				alert("分享失败");
+				alert(data.message);
+				location.href="/books/"
 			}
 		});
 	}

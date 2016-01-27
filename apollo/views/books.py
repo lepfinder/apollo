@@ -14,6 +14,8 @@ from sqlalchemy import or_
 from apollo.models import Res,Book,BorrowLog,Tag,BookTag,Comment
 from apollo.extensions import db
 from apollo.helpers import DoubanClient
+from apollo.helpers import save_syslog
+
 
 books = Module(__name__)
 
@@ -58,8 +60,9 @@ def my():
         #剩余天数
         surplus_days = (datetime.datetime.combine(current_borrow_log.reback_time, datetime.datetime.min.time()) - datetime.datetime.now()).days
 
-    share_book_list = Book.query.filter_by(owner_id=current_user.id).order_by(Book.id.desc()).limit(10)
+    share_book_list = Book.query.filter_by(owner_id=current_user.id).order_by(Book.id.desc())
 
+    print dir(share_book_list)
     #借阅历史
     borrow_log_list = BorrowLog.query.filter_by(account_id = current_user.id).order_by(BorrowLog.id.desc()).limit(10)
     
@@ -76,6 +79,7 @@ def view(book_id):
 
     book = Book.query.filter_by(id = book_id).first()
 
+    save_syslog(current_user,request.remote_addr,"查看图书详情，book_id:%s" % book_id)
     #借阅历史
     borrow_log_list = BorrowLog.query.filter_by(book_id = book.id).order_by(BorrowLog.id.desc()).limit(10)
 
@@ -95,6 +99,17 @@ def share():
         return render_template("share.html")
 
     isbn = request.form['isbn']
+
+    # 校验书是否重复
+    book = Book.query.filter_by(isbn13 = isbn).filter_by(owner_id = current_user.id).first()
+    print book
+
+    if book:
+        res = Res(400,"分享失败，你已经共享过此书。")
+        return jsonify(res.serialize())
+
+
+
     recommend = request.form['recommend']
     client = DoubanClient()
     book = client.parse_book_info(isbn)
@@ -125,7 +140,7 @@ def share():
             bookTag.count = tag['count']
             db.session.add(bookTag)
             db.session.commit()
-
+        save_syslog(current_user,request.remote_addr,"分享图书，title:%s" % book.title.encode("utf-8"))
         res = Res(200,"分享成功")
     else:
         res = Res(400,"分享失败")

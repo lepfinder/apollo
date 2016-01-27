@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 
+from apollo.extensions import db
 
 class Res():
 
@@ -13,3 +14,15 @@ class Res():
             'code' : self.code,
             'message' : self.message
         }
+
+
+class Syslog(db.Model):
+    __tablename__ = 'syslog'
+
+    id = db.Column(db.Integer,primary_key=True)
+
+    account_id = db.Column(db.Integer)
+    account_name = db.Column(db.String(64))
+    op_ip = db.Column(db.String(20))
+    op_time = db.Column(db.DateTime)
+    content = db.Column(db.Text)

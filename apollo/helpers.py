@@ -2,8 +2,10 @@
 #coding=utf-8
 
 import requests
+import datetime
 import json
-from models import Book,BookTag
+from models import Book,BookTag,Syslog
+from apollo.extensions import db
 
 ##豆瓣接口api
 class DoubanClient():
@@ -42,6 +44,17 @@ class DoubanClient():
             book.status = 0 #初始状态为空闲中
 
         return book
+
+def save_syslog(current_user,op_ip,content):
+    syslog = Syslog()
+    if current_user.is_authenticated:
+        syslog.account_id = current_user.id
+        syslog.account_name = current_user.name
+    syslog.op_ip = op_ip
+    syslog.op_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    syslog.content = content
+    db.session.add(syslog)
+    db.session.commit()
 
 if __name__ == "__main__":
     client = DoubanClient()

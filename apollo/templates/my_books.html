@@ -46,7 +46,11 @@
 			你当前没有借阅任何图书。
     		{% endif %}
 
-			<div class="page-header"><h3>我分享的图书</h3></div>
+			<div class="page-header">
+				<h3>我分享的图书
+<sub><small>共分享了 <span class="text-danger" style="font-size: 1.8em;"><em>{{share_book_list.count()}}</em></span> 本书</small></sub>
+				</h3>
+			</div>
 		    <div class="row" style="padding-left: 15px;">
 		      {% for a in share_book_list %}
 		      <div class="col-xs-6 col-md-4 col-lg-4">

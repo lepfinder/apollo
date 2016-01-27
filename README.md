@@ -66,7 +66,13 @@ http://localhost:5000/accounts/oa_login/?login_name=xiyang&name=sadf
 
 ### change log
 
-2016-1-10： 完成图书标签 图书评论功能
+2016-01-10: 
+- 完成图书标签 图书评论功能
+2016-01-24: 
+- 添加操作日志功能
+- bugfix：我的图书，没有显示全个人分享的所有图书列表
+- bugfix：图书分享，同一个人可以多次分享同一本书
+
 
 ### TODO
 

@@ -35,7 +35,7 @@
 						</td>
 						<td valign="bottom">
 						{% if current_user.is_authenticated and current_borrow_book.status==1 %}
-				    		<a class="btn btn-primary btn-block" onClick="reback({{current_borrow_book.id}})"><span class="glyphicon glyphicon-book"></span> 我要还这本书</a>
+				    		<a class="btn btn-primary btn-block" onClick="reback({{current_borrow_book.id}},'{{current_borrow_book.owner_name}}')"><span class="glyphicon glyphicon-book"></span> 我要还这本书</a>
 			    		{% endif %}
 						</td>
 		    		</tr>
@@ -102,8 +102,8 @@
 
 {% block js %}
 <script type="text/javascript">
-	function reback(book_id){
-		if(confirm("确定要归还此书？")){
+	function reback(book_id,owner){
+		if(confirm("请找 【"+owner+"】 确认还书。")){
 			location.href="/books/reback/"+book_id;
 		}
 	}

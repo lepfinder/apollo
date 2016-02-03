@@ -79,7 +79,7 @@ def view(book_id):
 
     book = Book.query.filter_by(id = book_id).first()
 
-    save_syslog(current_user,request.remote_addr,"查看图书详情，book_id:%s" % book_id)
+    save_syslog(current_user,request.remote_addr,u"查看图书详情，书名:《%s》" % book.title)
     #借阅历史
     borrow_log_list = BorrowLog.query.filter_by(book_id = book.id).order_by(BorrowLog.id.desc()).limit(10)
 
@@ -140,7 +140,7 @@ def share():
             bookTag.count = tag['count']
             db.session.add(bookTag)
             db.session.commit()
-        save_syslog(current_user,request.remote_addr,"分享图书，title:%s" % book.title.encode("utf-8"))
+        save_syslog(current_user,request.remote_addr,u"分享图书，书名:《%s》" % book.title.encode("utf-8"))
         res = Res(200,"分享成功")
     else:
         res = Res(400,"分享失败")
@@ -169,15 +169,15 @@ def reback(book_id):
     task.create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     db.session.add(task)
 
-
     #记录还书时间
     borrow_log = BorrowLog.query.filter_by(id = book.borrow_log_id).first()
     borrow_log.real_reback_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     db.session.commit()
-    
-    
-    flash(u"还书成功，好借好还，再借不难。","info")
+
+    save_syslog(current_user,request.remote_addr,u"申请还书，书名:《%s》" % book.title)
+
+    flash(u"申请还书成功，请找%s确认" % book.owner_name,"danger")
     return redirect(url_for("books.my"))
 
 # 借书
@@ -285,6 +285,9 @@ def confirm_reback(id):
 
             db.session.commit()
 
+            save_syslog(current_user,request.remote_addr,u"还书确认成功，书名:《%s》" % book.title)
+
+
             flash(u"确认成功。","success")
         else:
             flash(u"确认失败，没有找到对应的图书。","danger")
@@ -311,6 +314,9 @@ def comment():
     comment.create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     db.session.add(comment)
     db.session.commit()
+
+    save_syslog(current_user,request.remote_addr,u"评价成功")
+
 
     flash(u"评价成功","info")
     return redirect(url_for("books.view",book_id = book_id))

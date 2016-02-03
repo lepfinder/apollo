@@ -46,10 +46,10 @@
 					<td valign="bottom">
 					{% if current_user.is_authenticated %}
 
-		    			{% if current_user.id | int == book.borrow_id %}
+		    			{% if current_user.id | int == book.borrow_id and book.status==1 %}
 			    		<a class="btn btn-primary btn-block" onClick="reback({{book.id}})"><span class="glyphicon glyphicon-book"></span> 我要还这本书</a>
 			    		{% endif %}
-			    		{% if current_user.id | int != book.borrow_id %}
+			    		{% if current_user.id | int != book.borrow_id and book.status==0%}
 			    		<a class="btn btn-success btn-block" onClick="borrow({{book.id}})"><span class="glyphicon glyphicon-book"></span> 我要借这本书</a>
 			    		{% endif %}
 			    		

@@ -84,3 +84,16 @@ class Comment(db.Model):
     content = db.Column(db.Text)
     create_time = db.Column(db.DateTime)
 
+class Task(db.Model):
+    __tablename__ = 'tasks'
+
+    id = db.Column(db.Integer,primary_key=True)
+
+    user_id = db.Column(db.Integer)
+    book_id = db.Column(db.Integer)
+    content = db.Column(db.Text)
+    create_time = db.Column(db.DateTime)
+    opt_time = db.Column(db.DateTime)
+    status = db.Column(db.Integer)
+
+

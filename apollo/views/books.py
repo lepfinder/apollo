@@ -11,7 +11,7 @@ from flask import Module, Response, request, flash, jsonify, g, current_app,\
 from flask.ext.login import login_required,current_user
 from sqlalchemy import or_
 
-from apollo.models import Res,Book,BorrowLog,Tag,BookTag,Comment
+from apollo.models import Res,Book,BorrowLog,Tag,BookTag,Comment,Task,Syslog
 from apollo.extensions import db
 from apollo.helpers import DoubanClient
 from apollo.helpers import save_syslog
@@ -149,6 +149,7 @@ def share():
 
 # 还书
 @books.route("/reback/<int:book_id>/", methods=("GET","POST"))
+@login_required
 def reback(book_id):
     print "reback book , book_id=",book_id
 
@@ -158,6 +159,16 @@ def reback(book_id):
     #book.borrow_id = None
     #book.borrow_name = ''
     book.status = 2 #还书成功，将状态恢复为2  0 ：空闲中 1：借阅中 2：归还中
+
+    #记录到还书确认任务表中
+    task = Task()
+    task.user_id = book.owner_id
+    task.book_id = book.id
+    task.content = u"%s 要归还书：<<%s>>，请确认是否收到。" % (current_user.name,book.title)
+    task.status = 0
+    task.create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    db.session.add(task)
+
 
     #记录还书时间
     borrow_log = BorrowLog.query.filter_by(id = book.borrow_log_id).first()
@@ -171,6 +182,7 @@ def reback(book_id):
 
 # 借书
 @books.route("/borrow/<int:book_id>/", methods=("GET","POST"))
+@login_required
 def borrow(book_id):
     print "borrow book , book_id=",book_id
 
@@ -229,8 +241,63 @@ def tags():
 
     return render_template("tags.html",tags = tags)
 
+# 还书任务列表
+@books.route("/tasks/", methods=("GET","POST"))
+@login_required
+def tasks():
+    tasks = Task.query.filter_by(status = 0).filter_by(user_id = current_user.id).order_by(Task.create_time).all()
+
+    return render_template("tasks.html",tasks = tasks)
+
+# 获取任务数量
+@books.route("/task_count/", methods=("GET","POST"))
+@login_required
+def task_count():
+    tasks = Task.query.filter_by(status = 0).filter_by(user_id = current_user.id).order_by(Task.create_time).all()
+
+    print dir(tasks)
+
+    return tasks.count()
+
+
+# 确认还书流程
+@books.route("/confirm_reback/<int:id>", methods=("GET","POST"))
+@login_required
+def confirm_reback(id):
+    task = Task.query.filter_by(id = id).first()
+
+    if task:
+        print task.book_id
+        book = Book.query.filter_by(id = task.book_id).first()
+
+        if book:
+            print book.borrow_id
+            # 修改图书属性
+            book.borrow_id = None
+            book.borrow_name = ''
+            book.status = 0 #还书成功，将状态恢复为0  0 ：空闲中 1：借阅中 2：归还中
+
+            print book.borrow_id
+            db.session.commit()
+
+            task.status = 1
+            task.opt_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            db.session.commit()
+
+            flash(u"确认成功。","success")
+        else:
+            flash(u"确认失败，没有找到对应的图书。","danger")
+
+    else:
+        flash(u"确认失败，没有找到任务。","danger")
+
+    return redirect(url_for("books.tasks"))
+
+
 # 添加评论
 @books.route("/comment/", methods=("GET","POST"))
+@login_required
 def comment():
     content = request.form['content']
     book_id = request.form['book_id']
@@ -247,4 +314,13 @@ def comment():
 
     flash(u"评价成功","info")
     return redirect(url_for("books.view",book_id = book_id))
+
+# 查看操作日志
+@books.route("/syslog/", methods=("GET","POST"))
+@books.route("/syslog/<int:page>/", methods=("GET","POST"))
+def syslog(page=1):
+
+    page_obj = Syslog.query.order_by(Syslog.id.desc()).paginate(page, Syslog.PER_PAGE, False)
+
+    return render_template("syslog.html", page_obj = page_obj)
 

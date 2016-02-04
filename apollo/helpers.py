@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-#coding=utf-8
+# coding=utf-8
 
 import requests
 import datetime
 import json
-from models import Book,BookTag,Syslog
+from models import Book, BookTag, Syslog
 from apollo.extensions import db
 
-##豆瓣接口api
-class DoubanClient():
 
-    def parse_book_info(self,isbn):
+# 豆瓣接口api
+class DoubanClient():
+    def parse_book_info(self, isbn):
         r = requests.get('http://api.douban.com/v2/book/isbn/%s' % isbn)
 
         jsonObj = json.loads(r.text)
@@ -19,7 +19,7 @@ class DoubanClient():
 
         if jsonObj['title']:
             book.title = jsonObj['title']
-            
+
             authors = jsonObj['author']
             book.author = ",".join(authors)
 
@@ -41,11 +41,12 @@ class DoubanClient():
             book.borrow_id = 0
             book.borrow_name = ''
             book.borrow_counts = 0
-            book.status = 0 #初始状态为空闲中
+            book.status = 0  # 初始状态为空闲中
 
         return book
 
-def save_syslog(current_user,op_ip,content):
+
+def save_syslog(current_user, op_ip, content):
     syslog = Syslog()
     if current_user.is_authenticated:
         syslog.account_id = current_user.id
@@ -55,6 +56,7 @@ def save_syslog(current_user,op_ip,content):
     syslog.content = content
     db.session.add(syslog)
     db.session.commit()
+
 
 if __name__ == "__main__":
     client = DoubanClient()

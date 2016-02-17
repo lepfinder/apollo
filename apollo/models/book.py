@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-#coding=utf-8
+# coding=utf-8
 
 from apollo.extensions import db
+
 
 class Book(db.Model):
     __tablename__ = 'books'
 
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     PER_PAGE = 12
 
@@ -34,10 +35,11 @@ class Book(db.Model):
     status = db.Column(db.Integer)
     recommend = db.Column(db.Text)
 
+
 class BorrowLog(db.Model):
     __tablename__ = 'borrow_log'
 
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     account_id = db.Column(db.Integer)
     account_name = db.Column(db.String(64))
@@ -47,7 +49,7 @@ class BorrowLog(db.Model):
     reback_time = db.Column(db.DateTime)
     real_reback_time = db.Column(db.DateTime)
 
-    def __init__(self,account_id,account_name,book_id,book_name):
+    def __init__(self, account_id, account_name, book_id, book_name):
         self.account_id = account_id
         self.account_name = account_name
         self.book_id = book_id
@@ -57,7 +59,7 @@ class BorrowLog(db.Model):
 class Tag(db.Model):
     __tablename__ = 'tags'
 
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     name = db.Column(db.String(64))
     counts = db.Column(db.Integer)
@@ -67,16 +69,17 @@ class Tag(db.Model):
 class BookTag(db.Model):
     __tablename__ = 'book_tag'
 
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     book_id = db.Column(db.Integer)
     tag_id = db.Column(db.Integer)
     count = db.Column(db.Integer)
 
+
 class Comment(db.Model):
     __tablename__ = 'comments'
 
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     book_id = db.Column(db.Integer)
     account_id = db.Column(db.Integer)
@@ -84,10 +87,11 @@ class Comment(db.Model):
     content = db.Column(db.Text)
     create_time = db.Column(db.DateTime)
 
+
 class Task(db.Model):
     __tablename__ = 'tasks'
 
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(db.Integer)
     book_id = db.Column(db.Integer)
@@ -95,5 +99,3 @@ class Task(db.Model):
     create_time = db.Column(db.DateTime)
     opt_time = db.Column(db.DateTime)
     status = db.Column(db.Integer)
-
-

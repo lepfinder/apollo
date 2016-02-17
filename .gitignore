@@ -2,3 +2,4 @@
 venv/*
 apollo/config.cfg
 nohup.out
+.idea/*

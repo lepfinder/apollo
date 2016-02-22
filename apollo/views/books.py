@@ -9,7 +9,7 @@ from flask import Module, Response, request, flash, jsonify, g, current_app, \
 from flask.ext.login import login_required, current_user
 from sqlalchemy import or_
 
-from apollo.models import Res, Book, BorrowLog, Tag, BookTag, Comment, Task, Syslog
+from apollo.models import Res, Book, BorrowLog, Tag, BookTag, Comment, Task, Syslog, Account
 from apollo.extensions import db
 from apollo.helpers import DoubanClient
 from apollo.helpers import save_syslog
@@ -111,6 +111,7 @@ def share():
         res = Res(400, "分享失败，你已经共享过此书。")
         return jsonify(res.serialize())
 
+    city = request.form['city']
     recommend = request.form['recommend']
     client = DoubanClient()
     book = client.parse_book_info(isbn)
@@ -119,6 +120,7 @@ def share():
         book.owner_id = current_user.id
         book.owner_name = current_user.name
         book.recommend = recommend
+        book.city = city
 
         db.session.add(book)
         db.session.commit()
@@ -141,7 +143,16 @@ def share():
             bookTag.count = tag['count']
             db.session.add(bookTag)
             db.session.commit()
-        save_syslog(current_user, request.remote_addr, u"分享图书，书名:《%s》" % book.title.encode("utf-8"))
+        save_syslog(current_user, request.remote_addr, u"分享图书，书名:《%s》" % book.title)
+
+        # 处理当前人的城市属性
+        # 修改当前登录人的城市为最后分享图书的城市
+        account = Account.query.filter_by(id=current_user.id).first()
+        account.city = book.city
+        db.session.commit()
+
+        print account
+
         res = Res(200, "分享成功")
     else:
         res = Res(400, "分享失败")

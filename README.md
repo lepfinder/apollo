@@ -73,6 +73,8 @@ http://localhost:5000/accounts/oa_login/?login_name=xiyang&name=sadf
 - bugfix：我的图书，没有显示全个人分享的所有图书列表
 - bugfix：图书分享，同一个人可以多次分享同一本书
 
+2016-02-22:
+- 分享图书和借阅图书时添加图书所在城市属性
 
 ### TODO
 

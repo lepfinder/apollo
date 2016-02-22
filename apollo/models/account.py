@@ -14,6 +14,7 @@ class Account(db.Model,UserMixin):
     login_name = db.Column(db.String(64))
     mobile = db.Column(db.String(64))
     passwd = db.Column(db.String(64))
+    city = db.Column(db.String(64))
     create_time = db.Column(db.DateTime)
 
     def __init__(self,login_name,name,passwd):

@@ -34,6 +34,7 @@ class Book(db.Model):
     # 图书状态 0 ：空闲中 1：借阅中 2：归还中
     status = db.Column(db.Integer)
     recommend = db.Column(db.Text)
+    city = db.Column(db.String(64))
 
 
 class BorrowLog(db.Model):

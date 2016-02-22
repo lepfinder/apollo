@@ -39,6 +39,7 @@
 							<p>出版社：{{book.publisher}}</p>
 							<p>价格：{{book.price}}</p>
 							<p>共享人：{{book.owner_name}}</p>
+							<p>所在城市：{{book.city}}</p>
 							<p>当前持有人：{{book.borrow_name}}</p>
 							<p>借阅次数：{{book.borrow_counts}}</p>
 						</small>
@@ -50,7 +51,7 @@
 			    		<a class="btn btn-primary btn-block" onClick="reback({{book.id}})"><span class="glyphicon glyphicon-book"></span> 我要还这本书</a>
 			    		{% endif %}
 			    		{% if current_user.id | int != book.borrow_id and book.status==0%}
-			    		<a class="btn btn-success btn-block" onClick="borrow({{book.id}})"><span class="glyphicon glyphicon-book"></span> 我要借这本书</a>
+			    		<a class="btn btn-success btn-block" onClick="borrow({{book.id}},'{{ book.city }}')"><span class="glyphicon glyphicon-book"></span> 我要借这本书</a>
 			    		{% endif %}
 			    		
 		    		{% endif %}
@@ -132,8 +133,19 @@
 		}
 	}
 
-	function borrow(book_id){
-		location.href="/books/borrow/"+book_id;
+	function borrow(book_id,book_city){
+        console.log(book_city)
+        console.log('{{ current_user.city }}')
+        current_user_city = '{{ current_user.city }}';
+        if(current_user_city != 'None'){
+            if(current_user_city != book_city){
+               if(confirm("你当前的城市是" + current_user_city +",你所借的图书所在城市是:"+book_city + ",你确定要继续借此书么吗?")){
+                   location.href="/books/borrow/"+book_id;
+               }
+            }
+        }else{
+            location.href="/books/borrow/"+book_id;
+        }
 	}
 	
 </script>

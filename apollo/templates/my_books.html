@@ -19,7 +19,6 @@
 		      		<tr>
 			      		<td width="110px;">
 					        <a href="/books/{{current_borrow_book.id}}" class="thumbnail">
-		      				</div>
 					          <img data-src="holder.js/100%x180" alt="100%x180" style="height: 158px; width: 108px; display: block;" src="{{current_borrow_book.image}}" data-holder-rendered="true">
 					        </a>
 					    </td>
@@ -30,6 +29,7 @@
 								<p>出版社：{{current_borrow_book.publisher[:7]}}</p>
 								<p>价格：{{current_borrow_book.price}}</p>
 								<p>共享人：{{current_borrow_book.owner_name}}</p>
+								<p>所在城市：{{current_borrow_book.city}}</p>
 								<p>当前持有人：{{current_borrow_book.borrow_name}}</p>
 							</small>
 						</td>
@@ -66,8 +66,9 @@
 								<p>书名：{{a.title[:10]}}</p>
 								<p>豆瓣评分：{{a.rating}}</p>
 								<p>作者：{{a.author[:12]}}</p>
-								<p>出版社：{{a.publisher[:7]}}</p>
+								<!--<p>出版社：{{a.publisher[:7]}}</p>-->
 								<p>共享人：{{a.owner_name}}</p>
+								<p>所在城市：{{a.city}}</p>
 								<p>当前持有人：{{a.borrow_name}}</p>
 							</small>
 						</td>

@@ -22,7 +22,12 @@ books = Module(__name__)
 def index():
     page = 1
     keywords = u''
+    # 热门标签
     tag_list = Tag.query.order_by(Tag.counts.desc()).limit(10)
+
+    # 城市标签
+    sql = "select DISTINCT city from books "
+    city_list = db.engine.execute(sql)
 
     if request.method == "POST":
         page = request.form['page']
@@ -30,7 +35,7 @@ def index():
         keywords = keywords.encode("utf-8")
         page = int(page) if page else 1
 
-        print "keywords=", keywords, "page=", page
+        # print "keywords=", keywords, "page=", page
         if not keywords:
             page_obj = Book.query.order_by(Book.id.desc()).paginate(page, Book.PER_PAGE, False)
         else:
@@ -41,7 +46,7 @@ def index():
     else:
         page_obj = Book.query.order_by(Book.id.desc()).paginate(page, Book.PER_PAGE, False)
 
-    return render_template("index.html", q="", tag_list=tag_list, page_obj=page_obj)
+    return render_template("index.html", q="", tag_list=tag_list, city_list=city_list, page_obj=page_obj)
 
 
 # 关于页
@@ -244,9 +249,35 @@ def tag_books(tag_id):
     tag_list = Tag.query.order_by(Tag.counts.desc()).limit(10)
 
     sql = "select b.* from book_tag a left join books b on a.book_id = b.id where a.tag_id=%d" % tag_id
-    books = db.engine.execute(sql)
+    book_list = db.engine.execute(sql)
 
-    return render_template("tag_books.html", tag=tag, books=books, tag_list=tag_list)
+    return render_template("tag_books.html", tag=tag, books=book_list, tag_list=tag_list)
+
+
+# 查看某个城市的图书
+@books.route("/city/<city>/", methods=("GET", "POST"))
+def city_books(city):
+    page = 1
+
+    tag_list = Tag.query.order_by(Tag.counts.desc()).limit(10)
+
+    # 城市标签
+    sql = "select DISTINCT city from books "
+    city_list = db.engine.execute(sql)
+
+    if request.method == "POST":
+        page = request.form['page']
+        page = int(page) if page else 1
+
+        print page
+
+        # print "keywords=", keywords, "page=", page
+        page_obj = Book.query.filter_by(city=city).order_by(Book.id.desc()).paginate(page, 20,False)
+    else:
+        page_obj = Book.query.filter_by(city=city).order_by(Book.id.desc()).paginate(page, 20, False)
+
+    print dir(page_obj)
+    return render_template("city_books.html", city=city, page_obj=page_obj, city_list=city_list)
 
 
 # 查看某个标签的图书
@@ -271,8 +302,6 @@ def tasks():
 @login_required
 def task_count():
     tasks = Task.query.filter_by(status=0).filter_by(user_id=current_user.id).order_by(Task.create_time).all()
-
-    print dir(tasks)
 
     return tasks.count()
 
@@ -321,7 +350,7 @@ def comment():
     content = request.form['content']
     book_id = request.form['book_id']
 
-    print "add comment:", content, book_id
+    print "add comment:", content.encode("utf-8"), book_id
     comment = Comment()
     comment.content = content
     comment.book_id = book_id

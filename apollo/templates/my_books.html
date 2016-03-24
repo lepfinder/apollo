@@ -29,7 +29,8 @@
 								<p>出版社：{{current_borrow_book.publisher[:7]}}</p>
 								<p>价格：{{current_borrow_book.price}}</p>
 								<p>共享人：{{current_borrow_book.owner_name}}</p>
-								<p>所在城市：{{current_borrow_book.city}}</p>
+                                <p>所在城市：<span class="text-danger" style="font-size: 1.2em">{{current_borrow_book.city}}</span></p>
+
 								<p>当前持有人：{{current_borrow_book.borrow_name}}</p>
 							</small>
 						</td>
@@ -68,7 +69,8 @@
 								<p>作者：{{a.author[:12]}}</p>
 								<!--<p>出版社：{{a.publisher[:7]}}</p>-->
 								<p>共享人：{{a.owner_name}}</p>
-								<p>所在城市：{{a.city}}</p>
+                                <p>所在城市：<span class="text-danger" style="font-size: 1.2em">{{a.city}}</span></p>
+
 								<p>当前持有人：{{a.borrow_name}}</p>
 							</small>
 						</td>
